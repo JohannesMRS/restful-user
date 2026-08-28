@@ -15,6 +15,7 @@ func Login(c *gin.Context) {
 	var req = structs.UserLoginRequest{}
 	var user = models.User{}
 
+	// Convert data JSON dari http
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, structs.ErrorResponse{
 			Success: false,
@@ -24,6 +25,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// Mencari data user dengan username
 	if err := database.DB.Where("username = ?", req.Username).First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, structs.ErrorResponse{
 			Success: false,
@@ -33,6 +35,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// Lalu membandingkan password yang di hash di database dengan password yang dikirim dari http
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 		c.JSON(http.StatusUnauthorized, structs.ErrorResponse{
 			Success: false,
@@ -42,8 +45,10 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// Jika sukses token di generate
 	token := helpers.GenerateToken(user.Username)
 
+	// Mengembalikan response sukses
 	c.JSON(http.StatusOK, structs.SuccessResponse{
 		Success: true,
 		Message: "Login success",

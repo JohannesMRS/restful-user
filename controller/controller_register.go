@@ -13,6 +13,7 @@ import (
 func Register(c *gin.Context) {
 	var req = structs.UserCreateRequest{}
 
+	// Convert data JSON dari http
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, structs.ErrorResponse{
 			Success: false,
@@ -29,8 +30,10 @@ func Register(c *gin.Context) {
 		Password: helpers.HashPassword(req.Password),
 	}
 
+	// Memasukkan data ke database
 	if err := database.DB.Create(&user).Error; err != nil {
 		if helpers.IsDuplicateEntryError(err) {
+			// Mengirim respon error jika ada data duplikat
 			c.JSON(http.StatusConflict, structs.ErrorResponse{
 				Success: false,
 				Message: "Duplicate entry error",
@@ -46,6 +49,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	// Mengirim response sukses
 	c.JSON(http.StatusCreated, structs.SuccessResponse{
 		Success: true,
 		Message: "Data successfully inserted",

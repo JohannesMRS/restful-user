@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Menampilkan data user
+
 func FindUsers(c *gin.Context) {
 	var users []models.User
 
@@ -22,6 +24,7 @@ func FindUsers(c *gin.Context) {
 	})
 }
 
+// Menambah data user
 func CreateUser(c *gin.Context) {
 	var req = structs.UserCreateRequest{}
 
@@ -64,6 +67,7 @@ func CreateUser(c *gin.Context) {
 	})
 }
 
+// Mencari user berdasarkan ID
 func FindUserById(c *gin.Context) {
 	id := c.Param("id")
 
@@ -92,6 +96,7 @@ func FindUserById(c *gin.Context) {
 	})
 }
 
+// Update data user
 func UpdateUser(c *gin.Context) {
 	id := c.Param("id")
 
@@ -145,6 +150,7 @@ func UpdateUser(c *gin.Context) {
 	})
 }
 
+// Delete data user
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 
